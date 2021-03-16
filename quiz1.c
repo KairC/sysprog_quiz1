@@ -52,18 +52,26 @@ void swap_pair(node_t **head) {
   }
 }
 
-void reverse(node_t **head) {
-  node_t *cursor = NULL;
-  node_t **head_ptr = head;
-  while (*head_ptr) {
-    node_t *next = (*head_ptr)->next;
-    // CCC;
-    (*head_ptr)->next = cursor;
-    cursor = *head_ptr;
-    *head_ptr = next;
+node_t *rev_recursive(node_t **indirect, node_t **head) {
+  if (!(*indirect)->next->next) {
+    *head = (*indirect)->next;
+    return (*head);
+  } else {
+    node_t **new_indirect = &(*indirect)->next;
+    node_t *tmp = rev_recursive(new_indirect, head);
+    tmp->next = (*new_indirect);
+    return (tmp->next);
   }
-  *head_ptr = cursor;
 }
+
+void reverse(node_t **head) {
+  node_t **indirect = head;
+  node_t *tail = *head;
+  node_t *tmp = rev_recursive(indirect, head);
+  tmp->next = tail;
+  tail->next = NULL;
+}
+
 
 void print_list(node_t *head)
 {
