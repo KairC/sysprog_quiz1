@@ -1,6 +1,6 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 typedef struct __node {
     int value;
     struct __node *next;
@@ -14,17 +14,19 @@ void add_entry(node_t **head, int new_value)
     new_node->value = new_value;
     new_node->next = NULL;
 
-    AA1;
+    // AA1;
+    assert(new_node);
     while (*indirect)
         indirect = &(*indirect)->next;
-    AA2;
+    // AA2;
+    *indirect = new_node;
 }
 
 node_t *find_entry(node_t *head, int value)
 {
     node_t *current = head;
     for (; current && current->value != value; current = current->next)
-        /* interate */;
+      /* iterate */;
     return current;
 }
 
@@ -41,12 +43,14 @@ void remove_entry(node_t **head, node_t *entry)
 
 node_t *swap_pair(node_t *head)
 {
-    for (node_t **node = &head; *node && (*node)->next; BB1) {
-        node_t *tmp = *node;
-        BB2;
-        tmp->next = (*node)->next;
-        (*node)->next = tmp;
-    }
+  for (node_t **node = &head; *node && (*node)->next;
+       /*BB1*/ node = &(*node)->next->next) {
+    node_t *tmp = *node;
+    // BB2;
+    *node = (*node)->next;
+    tmp->next = (*node)->next;
+    (*node)->next = tmp;
+  }
     return head;
 }
 
@@ -55,7 +59,9 @@ node_t *reverse(node_t *head)
     node_t *cursor = NULL;
     while (head) {
         node_t *next = head->next;
-        CCC;
+        // CCC;
+        head->next = cursor;
+        cursor = head;
         head = next;
     }
     return cursor;
